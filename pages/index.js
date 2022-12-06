@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import ThreeDCard from '../components/ui/ThreeDCard'
 import styles from '../styles/Home.module.css'
+import { motion as m, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
   return (
@@ -12,46 +14,40 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
+        {/* <ThreeDCard>
+          <h1 className="font-bold text-3xl">
+            eightynine
+          </h1>
+        </ThreeDCard> */}
+        <AnimatePresence>
+          <m.div 
+            className="relative flex justify-center items-center"
           >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+            <m.h1 
+              className="absolute font-bold text-5xl z-10 dark:text-slate-50 text-slate-800"
+              initial={{ opacity: 0, y: 100}}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ 
+                duration: 0.5, ease: "easeIn",
+                opacity: { duration: 1.2 } 
+              }}
+            >
+              eightynine
+            </m.h1>
+            <m.span 
+              className="absolute font-bold text-[200px] dark:text-slate-800 text-slate-200"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{
+                opacity: { duration: 0.7 }
+              }}
+            >
+              89
+            </m.span>
+          </m.div>
+        </AnimatePresence>
       </main>
 
       <footer className={styles.footer}>
@@ -60,10 +56,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
+          Powered by me
         </a>
       </footer>
     </div>
