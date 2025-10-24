@@ -238,7 +238,7 @@ export default function TableExtractor() {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2">
             <FileText className="w-8 h-8 text-indigo-600" />
-            Extractor de Tablas MEDIFARMA
+            Extractor de Tablas
           </h1>
           <p className="text-gray-600 mb-6">
             Sube múltiples archivos .txt para extraer y visualizar tablas con
@@ -461,7 +461,7 @@ export default function TableExtractor() {
               No hay datos para mostrar
             </p>
             <p className="text-gray-400 text-sm">
-              Sube archivos .txt de MEDIFARMA para comenzar
+              Sube archivos .txt de CA para comenzar
             </p>
           </div>
         )}
