@@ -362,7 +362,7 @@ export default function TableExtractor() {
                         onChange={(e) =>
                           handleFilterChange("filename", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black "
                       />
                     </th>
                     <th className="px-4 py-2">
@@ -373,7 +373,7 @@ export default function TableExtractor() {
                         onChange={(e) =>
                           handleFilterChange("razonSocial", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black "
                       />
                     </th>
                     <th className="px-4 py-2">
@@ -384,7 +384,7 @@ export default function TableExtractor() {
                         onChange={(e) =>
                           handleFilterChange("codigo", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                       />
                     </th>
                     <th className="px-4 py-2">
@@ -395,7 +395,7 @@ export default function TableExtractor() {
                         onChange={(e) =>
                           handleFilterChange("descripcion", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                       />
                     </th>
                     <th className="px-4 py-2">
@@ -406,7 +406,7 @@ export default function TableExtractor() {
                         onChange={(e) =>
                           handleFilterChange("cantidad", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                       />
                     </th>
                     <th className="px-4 py-2">
@@ -417,7 +417,7 @@ export default function TableExtractor() {
                         onChange={(e) =>
                           handleFilterChange("descuento", e.target.value)
                         }
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
                       />
                     </th>
                   </tr>
