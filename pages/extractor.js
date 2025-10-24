@@ -1,9 +1,33 @@
-import React, { useState } from "react";
-import { Upload, FileText, X, Download } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import {
+  Upload,
+  FileText,
+  X,
+  Download,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 
 export default function TableExtractor() {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // Filter states
+  const [filters, setFilters] = useState({
+    filename: "",
+    razonSocial: "",
+    codigo: "",
+    descripcion: "",
+    cantidad: "",
+    descuento: "",
+  });
+
+  // Sort state
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: null,
+  });
 
   const parseTableFromText = (text, filename) => {
     const lines = text.split("\n");
@@ -95,7 +119,73 @@ export default function TableExtractor() {
 
   const clearData = () => {
     setTableData([]);
+    setFilters({
+      filename: "",
+      razonSocial: "",
+      codigo: "",
+      descripcion: "",
+      cantidad: "",
+      descuento: "",
+    });
+    setSortConfig({ key: null, direction: null });
   };
+
+  const handleFilterChange = (column, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [column]: value,
+    }));
+  };
+
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    } else if (sortConfig.key === key && sortConfig.direction === "desc") {
+      direction = null;
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Filtered and sorted data
+  const filteredAndSortedData = useMemo(() => {
+    let filtered = tableData.filter((row) => {
+      return (
+        row.filename.toLowerCase().includes(filters.filename.toLowerCase()) &&
+        row.razonSocial
+          .toLowerCase()
+          .includes(filters.razonSocial.toLowerCase()) &&
+        row.codigo.toLowerCase().includes(filters.codigo.toLowerCase()) &&
+        row.descripcion
+          .toLowerCase()
+          .includes(filters.descripcion.toLowerCase()) &&
+        row.cantidad.toLowerCase().includes(filters.cantidad.toLowerCase()) &&
+        row.descuento.toLowerCase().includes(filters.descuento.toLowerCase())
+      );
+    });
+
+    if (sortConfig.key && sortConfig.direction) {
+      filtered = [...filtered].sort((a, b) => {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+
+        // Try to parse as numbers for numeric columns
+        const aNum = parseFloat(aValue);
+        const bNum = parseFloat(bValue);
+        const isNumeric = !isNaN(aNum) && !isNaN(bNum);
+
+        if (isNumeric) {
+          return sortConfig.direction === "asc" ? aNum - bNum : bNum - aNum;
+        }
+
+        // String comparison
+        const comparison = aValue.localeCompare(bValue);
+        return sortConfig.direction === "asc" ? comparison : -comparison;
+      });
+    }
+
+    return filtered;
+  }, [tableData, filters, sortConfig]);
 
   const exportToCSV = () => {
     const headers = [
@@ -108,7 +198,7 @@ export default function TableExtractor() {
     ];
     const csvContent = [
       headers.join(","),
-      ...tableData.map((row) =>
+      ...filteredAndSortedData.map((row) =>
         [
           `"${row.filename}"`,
           `"${row.razonSocial}"`,
@@ -129,13 +219,26 @@ export default function TableExtractor() {
     link.click();
   };
 
+  const SortIcon = ({ column }) => {
+    if (sortConfig.key !== column) {
+      return <ArrowUpDown className="w-4 h-4 text-gray-400" />;
+    }
+    if (sortConfig.direction === "asc") {
+      return <ArrowUp className="w-4 h-4 text-indigo-600" />;
+    }
+    if (sortConfig.direction === "desc") {
+      return <ArrowDown className="w-4 h-4 text-indigo-600" />;
+    }
+    return <ArrowUpDown className="w-4 h-4 text-gray-400" />;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2">
             <FileText className="w-8 h-8 text-indigo-600" />
-            Extractor de Tablas
+            Extractor de Tablas MEDIFARMA
           </h1>
           <p className="text-gray-600 mb-6">
             Sube múltiples archivos .txt para extraer y visualizar tablas con
@@ -186,7 +289,8 @@ export default function TableExtractor() {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="p-4 bg-indigo-600 text-white flex items-center justify-between">
               <h2 className="text-xl font-semibold">
-                Datos Extraídos ({tableData.length} registros)
+                Datos Extraídos ({filteredAndSortedData.length} de{" "}
+                {tableData.length} registros)
               </h2>
             </div>
 
@@ -195,27 +299,131 @@ export default function TableExtractor() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                      Archivo
+                      <button
+                        onClick={() => handleSort("filename")}
+                        className="flex items-center gap-1 hover:text-indigo-600 transition-colors"
+                      >
+                        Archivo
+                        <SortIcon column="filename" />
+                      </button>
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                      Razón Social
+                      <button
+                        onClick={() => handleSort("razonSocial")}
+                        className="flex items-center gap-1 hover:text-indigo-600 transition-colors"
+                      >
+                        Razón Social
+                        <SortIcon column="razonSocial" />
+                      </button>
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                      Código
+                      <button
+                        onClick={() => handleSort("codigo")}
+                        className="flex items-center gap-1 hover:text-indigo-600 transition-colors"
+                      >
+                        Código
+                        <SortIcon column="codigo" />
+                      </button>
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                      Descripción
+                      <button
+                        onClick={() => handleSort("descripcion")}
+                        className="flex items-center gap-1 hover:text-indigo-600 transition-colors"
+                      >
+                        Descripción
+                        <SortIcon column="descripcion" />
+                      </button>
                     </th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
-                      Cantidad
+                      <button
+                        onClick={() => handleSort("cantidad")}
+                        className="flex items-center gap-1 hover:text-indigo-600 transition-colors ml-auto"
+                      >
+                        Cantidad
+                        <SortIcon column="cantidad" />
+                      </button>
                     </th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
-                      Descuento %
+                      <button
+                        onClick={() => handleSort("descuento")}
+                        className="flex items-center gap-1 hover:text-indigo-600 transition-colors ml-auto"
+                      >
+                        Descuento %
+                        <SortIcon column="descuento" />
+                      </button>
+                    </th>
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <th className="px-4 py-2">
+                      <input
+                        type="text"
+                        placeholder="Filtrar..."
+                        value={filters.filename}
+                        onChange={(e) =>
+                          handleFilterChange("filename", e.target.value)
+                        }
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </th>
+                    <th className="px-4 py-2">
+                      <input
+                        type="text"
+                        placeholder="Filtrar..."
+                        value={filters.razonSocial}
+                        onChange={(e) =>
+                          handleFilterChange("razonSocial", e.target.value)
+                        }
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </th>
+                    <th className="px-4 py-2">
+                      <input
+                        type="text"
+                        placeholder="Filtrar..."
+                        value={filters.codigo}
+                        onChange={(e) =>
+                          handleFilterChange("codigo", e.target.value)
+                        }
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </th>
+                    <th className="px-4 py-2">
+                      <input
+                        type="text"
+                        placeholder="Filtrar..."
+                        value={filters.descripcion}
+                        onChange={(e) =>
+                          handleFilterChange("descripcion", e.target.value)
+                        }
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </th>
+                    <th className="px-4 py-2">
+                      <input
+                        type="text"
+                        placeholder="Filtrar..."
+                        value={filters.cantidad}
+                        onChange={(e) =>
+                          handleFilterChange("cantidad", e.target.value)
+                        }
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </th>
+                    <th className="px-4 py-2">
+                      <input
+                        type="text"
+                        placeholder="Filtrar..."
+                        value={filters.descuento}
+                        onChange={(e) =>
+                          handleFilterChange("descuento", e.target.value)
+                        }
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {tableData.map((row, index) => (
+                  {filteredAndSortedData.map((row, index) => (
                     <tr
                       key={index}
                       className="hover:bg-gray-50 transition-colors"
@@ -253,7 +461,7 @@ export default function TableExtractor() {
               No hay datos para mostrar
             </p>
             <p className="text-gray-400 text-sm">
-              Sube archivos .txt de CA para comenzar
+              Sube archivos .txt de MEDIFARMA para comenzar
             </p>
           </div>
         )}
